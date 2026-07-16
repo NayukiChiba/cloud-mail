@@ -41,10 +41,9 @@ function getEpayConfig(c) {
 	// 未配置固定站点时，使用用户当前访问的域名生成支付回调地址。
 	const requestOrigin = new URL(c.req.url).origin;
 	const siteUrl = String(c.env.epay_site_url || requestOrigin).replace(/\/$/, '');
-	const privateKey = c.env.EPAY_MERCHANT_PRIVATE_KEY;
-	const publicKey = c.env.EPAY_PLATFORM_PUBLIC_KEY;
+	const merchantKey = String(c.env.EPAY_KEY || '').trim();
 
-	if (!apiUrl || !pid || !privateKey || !publicKey) {
+	if (!apiUrl || !pid || !merchantKey) {
 		throw new BizError(t('paymentNotConfigured'));
 	}
 
@@ -52,8 +51,7 @@ function getEpayConfig(c) {
 		apiUrl: apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`,
 		pid,
 		siteUrl,
-		privateKey,
-		publicKey
+		merchantKey
 	};
 }
 
@@ -146,12 +144,13 @@ const paymentService = {
 			return_url: `${config.siteUrl}/api/payment/return`,
 			out_trade_no: orderId,
 			name: `Cloud Mail ${plan.name}永久权限`,
-			money: formatMoney(amountCent)
-		}, config.pid, config.privateKey);
+			money: formatMoney(amountCent),
+			sitename: 'Cloud Mail'
+		}, config.pid, config.merchantKey);
 
 		return {
 			orderId,
-			submitUrl: new URL('api/pay/submit', config.apiUrl).toString(),
+			submitUrl: new URL('xpay/epay/submit.php', config.apiUrl).toString(),
 			fields
 		};
 	},
@@ -179,7 +178,7 @@ const paymentService = {
 			return false;
 		}
 
-		if (!await verifyEpayResponse(params, config.publicKey)) {
+		if (!verifyEpayResponse(params, config.merchantKey)) {
 			return false;
 		}
 		if (String(params.pid) !== config.pid || params.trade_status !== 'TRADE_SUCCESS') {
@@ -234,7 +233,7 @@ const paymentService = {
 
 	verifyReturn(c, params) {
 		const config = getEpayConfig(c);
-		return verifyEpayResponse(params, config.publicKey);
+		return verifyEpayResponse(params, config.merchantKey);
 	}
 };
 
