@@ -517,9 +517,11 @@ const dbInit = {
 			await c.env.db.prepare(`
         INSERT INTO role (
           role_id, name, key, create_time, sort, description, user_id, is_default, send_count, send_type, account_count
-        ) VALUES (
-          1, '普通用户', NULL, '0000-00-00 00:00:00', 0, '只有普通使用权限', 0, 1, NULL, 'ban', 10
-        )
+        ) VALUES
+          (1, '基础用户', NULL, CURRENT_TIMESTAMP, 1, '适合基础邮箱使用需求', 0, 1, 10, 'day', 1),
+          (2, '多域用户', NULL, CURRENT_TIMESTAMP, 2, '支持使用多个邮箱域名', 0, 0, 20, 'day', 4),
+          (3, '多账户用户', NULL, CURRENT_TIMESTAMP, 3, '支持创建和管理多个邮箱账户', 0, 0, 30, 'day', 10),
+          (4, '高级用户', NULL, CURRENT_TIMESTAMP, 4, '提供更高的邮箱账户与发送额度', 0, 0, 100, 'day', 10)
       `).run();
 		}
 

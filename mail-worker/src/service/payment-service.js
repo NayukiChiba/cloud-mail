@@ -22,9 +22,9 @@ const PAYMENT_TYPES = ['alipay', 'wxpay'];
 
 // 套餐价格是累计价格，升级时只收目标套餐与当前套餐的差价。
 const PAYMENT_PLANS = [
-	{ code: 'multi-game', name: '多域用户', roleId: 2, level: 1, priceCent: 500 },
-	{ code: 'multi-account', name: '多账户用户', roleId: 4, level: 2, priceCent: 1000 },
-	{ code: 'premium', name: '高级用户', roleId: 5, level: 3, priceCent: 1500 }
+	{ code: 'multi-domain', name: '多域用户', roleId: 2, level: 1, priceCent: 500 },
+	{ code: 'multi-account', name: '多账户用户', roleId: 3, level: 2, priceCent: 1000 },
+	{ code: 'premium', name: '高级用户', roleId: 4, level: 3, priceCent: 1500 }
 ];
 
 function getPlanByCode(planCode) {
