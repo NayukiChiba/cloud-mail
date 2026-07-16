@@ -42,6 +42,16 @@ const routes = [
                 }
             },
             {
+                path: '/upgrade',
+                name: 'upgrade',
+                component: () => import('@/views/upgrade/index.vue'),
+                meta: {
+                    title: 'upgradeRole',
+                    name: 'upgrade',
+                    menu: true
+                }
+            },
+            {
                 path: '/starred',
                 name: 'star',
                 component: () => import('@/views/star/index.vue'),

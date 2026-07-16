@@ -29,8 +29,39 @@ const dbInit = {
 		await this.v2_8DB(c);
 		await this.v2_9DB(c);
 		await this.v3_0DB(c);
+		await this.v3_1DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
+	},
+
+	async v3_1DB(c) {
+		await c.env.db.batch([
+			c.env.db.prepare(`
+				CREATE TABLE IF NOT EXISTS payment_order (
+					order_id TEXT PRIMARY KEY,
+					user_id INTEGER NOT NULL,
+					from_role_id INTEGER NOT NULL,
+					target_role_id INTEGER NOT NULL,
+					plan_code TEXT NOT NULL,
+					product_name TEXT NOT NULL,
+					amount_cent INTEGER NOT NULL,
+					payment_type TEXT NOT NULL,
+					status INTEGER NOT NULL DEFAULT 0,
+					platform_trade_no TEXT,
+					create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+					paid_time DATETIME
+				)
+			`),
+			c.env.db.prepare(`
+				CREATE INDEX IF NOT EXISTS idx_payment_order_user_id
+				ON payment_order(user_id, create_time)
+			`),
+			c.env.db.prepare(`
+				CREATE UNIQUE INDEX IF NOT EXISTS idx_payment_order_trade_no
+				ON payment_order(platform_trade_no)
+				WHERE platform_trade_no IS NOT NULL AND platform_trade_no != ''
+			`)
+		]);
 	},
 
 	async v3_0DB(c) {
