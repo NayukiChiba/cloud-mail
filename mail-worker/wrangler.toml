@@ -16,7 +16,7 @@ enabled = true
 [[d1_databases]]
 binding = "db"			#d1数据库绑定名默认不可修改
 database_name = "email"		#d1数据库名字
-database_id = "e8e5439e-8a9f-4551-a0ee-32f160f6a55e"		#d1数据库id
+database_id = "d6080a77-2334-468a-a06a-a1f017443563"		#d1数据库id
 
 [[kv_namespaces]]
 binding = "kv"			#kv绑定名默认不可修改
