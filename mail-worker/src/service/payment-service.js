@@ -38,11 +38,13 @@ function getPlanByRoleId(roleId) {
 function getEpayConfig(c) {
 	const apiUrl = String(c.env.epay_api_url || '').trim();
 	const pid = String(c.env.epay_pid || '').trim();
-	const siteUrl = String(c.env.epay_site_url || '').replace(/\/$/, '');
+	// 未配置固定站点时，使用用户当前访问的域名生成支付回调地址。
+	const requestOrigin = new URL(c.req.url).origin;
+	const siteUrl = String(c.env.epay_site_url || requestOrigin).replace(/\/$/, '');
 	const privateKey = c.env.EPAY_MERCHANT_PRIVATE_KEY;
 	const publicKey = c.env.EPAY_PLATFORM_PUBLIC_KEY;
 
-	if (!apiUrl || !pid || !siteUrl || !privateKey || !publicKey) {
+	if (!apiUrl || !pid || !privateKey || !publicKey) {
 		throw new BizError(t('paymentNotConfigured'));
 	}
 

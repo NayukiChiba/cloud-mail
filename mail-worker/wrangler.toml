@@ -44,7 +44,6 @@ crons = ["0 16 * * *"]	#每天晚上12点执行每日任务,刷新分析缓存
 #jwt_secret = ""			#jwt令牌的密钥,随便填一串字符串
 epay_api_url = "https://api.zhunfu.cn/"
 epay_pid = "1578"
-epay_site_url = "https://xn--8mr619f.email"
 
 [build]
 command = "pnpm --prefix ../mail-vue install && pnpm --prefix ../mail-vue run build"
