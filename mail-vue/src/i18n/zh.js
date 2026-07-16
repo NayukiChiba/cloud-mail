@@ -130,7 +130,7 @@ const zh = {
     regTitle: '输入账号密码以开始注册邮箱系统',
     loginEmailFullHint: '请输入完整邮箱地址（例如 user@example.com）',
     loginEmailUsernameHint: '请输入用户名，域名将在右侧自动补全',
-    registerEmailUsernameHint: '只填写用户名，会自动注册@example.com',
+    registerEmailUsernameHint: "只填写用户名，会自动注册{'@'}example.com",
     confirmPwd: '确认密码',
     regKeyOptional: '注册码（可选）',
     noAccount: '还没有账号?',

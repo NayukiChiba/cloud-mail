@@ -130,7 +130,7 @@ const en = {
     regTitle: 'Sign up for an account to use email',
     loginEmailFullHint: 'Enter your full email address (for example, user@example.com)',
     loginEmailUsernameHint: 'Enter your username; the domain is added automatically',
-    registerEmailUsernameHint: 'Enter only a username to register @example.com automatically',
+    registerEmailUsernameHint: "Enter only a username to register {'@'}example.com automatically",
     confirmPwd: 'Confirm password',
     regKeyOptional: 'Invite code (Optional)',
     noAccount: 'Don\'t have an account? \u200B',
