@@ -2,6 +2,13 @@ name = "cloud-mail"
 main = "src/index.js"
 compatibility_date = "2025-06-04"
 keep_vars = true
+routes = [
+	{ pattern = "xn--8mr619f.email", custom_domain = true },
+	{ pattern = "xn--dkr782h2dp.email", custom_domain = true },
+	{ pattern = "xn--ehqw9tnye.email", custom_domain = true },
+	{ pattern = "xn--kivy66br3pu7d.email", custom_domain = true },
+	{ pattern = "xn--qvrw50dh7j.email", custom_domain = true }
+]
 
 [observability]
 enabled = true
@@ -43,7 +50,7 @@ crons = ["0 16 * * *"]	#每天晚上12点执行每日任务,刷新分析缓存
 #admin = ""				#管理员的邮箱	示例: admin@example.com
 #jwt_secret = ""			#jwt令牌的密钥,随便填一串字符串
 epay_api_url = "https://pay.mzfpay.com/"
-#epay_pid = ""			#码支付商户ID
+epay_pid = "11891"			#码支付商户ID
 
 [build]
 command = "pnpm --prefix ../mail-vue install && pnpm --prefix ../mail-vue run build"
