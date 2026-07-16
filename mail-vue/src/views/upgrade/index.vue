@@ -37,6 +37,15 @@
           </div>
           <div class="permanent">{{ $t('permanentRole') }}</div>
           <el-divider />
+          <div class="plan-features">
+            <div class="features-title">{{ $t('planHighlights') }}</div>
+            <ul>
+              <li v-for="featureKey in getPlanFeatureKeys(plan.code)" :key="featureKey">
+                {{ $t(featureKey) }}
+              </li>
+            </ul>
+          </div>
+          <el-divider />
           <div v-if="plan.canUpgrade" class="upgrade-price">
             {{ $t('upgradePayAmount') }}：<strong>¥{{ plan.payAmount }}</strong>
           </div>
@@ -93,6 +102,24 @@ const paymentType = ref('alipay');
 const selectedPlan = ref(null);
 const returnMessage = ref('');
 const returnType = ref('info');
+const PLAN_FEATURE_KEYS = Object.freeze({
+  'multi-domain': [
+    'multiDomainFeatureDomains',
+    'multiDomainFeatureAccounts',
+    'multiDomainFeatureSend'
+  ],
+  'multi-account': [
+    'multiAccountFeatureDomains',
+    'multiAccountFeatureAccounts',
+    'multiAccountFeatureSend'
+  ],
+  premium: [
+    'premiumFeatureDomains',
+    'premiumFeatureExclusiveDomain',
+    'premiumFeatureAccounts',
+    'premiumFeatureSend'
+  ]
+});
 const planData = reactive({
   currentRoleId: null,
   currentRoleName: '',
@@ -101,6 +128,10 @@ const planData = reactive({
 
 let pollTimer = null;
 let pollCount = 0;
+
+function getPlanFeatureKeys(planCode) {
+  return PLAN_FEATURE_KEYS[planCode] || [];
+}
 
 async function loadPlans() {
   loading.value = true;
@@ -203,7 +234,7 @@ onBeforeUnmount(() => clearInterval(pollTimer));
 
 <style lang="scss" scoped>
 .upgrade-page {
-  max-width: 1100px;
+  max-width: 1380px;
   margin: 0 auto;
   padding: 30px;
 }
@@ -239,6 +270,13 @@ onBeforeUnmount(() => clearInterval(pollTimer));
   position: relative;
   text-align: center;
   overflow: visible;
+
+  :deep(.el-card__body) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+  }
 
   h3 {
     margin: 8px 0 18px;
@@ -276,6 +314,29 @@ onBeforeUnmount(() => clearInterval(pollTimer));
 .permanent,
 .disabled-text {
   color: var(--el-text-color-secondary);
+}
+
+.plan-features {
+  min-height: 152px;
+  text-align: left;
+
+  .features-title {
+    margin-bottom: 10px;
+    color: var(--el-text-color-primary);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--el-text-color-regular);
+    line-height: 30px;
+  }
+
+  li::marker {
+    color: var(--el-color-primary);
+  }
 }
 
 .upgrade-price {
@@ -325,6 +386,12 @@ onBeforeUnmount(() => clearInterval(pollTimer));
 
   .plan-list {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .plan-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>
