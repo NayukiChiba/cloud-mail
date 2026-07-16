@@ -63,9 +63,6 @@
       <el-radio-group v-model="paymentType" class="payment-types">
         <el-radio-button value="alipay">{{ $t('alipay') }}</el-radio-button>
         <el-radio-button value="wxpay">{{ $t('wechatPay') }}</el-radio-button>
-        <el-radio-button value="qqpay">{{ $t('qqPay') }}</el-radio-button>
-        <el-radio-button value="bank">{{ $t('unionPay') }}</el-radio-button>
-        <el-radio-button value="jdpay">{{ $t('jdPay') }}</el-radio-button>
       </el-radio-group>
       <template #footer>
         <el-button @click="paymentVisible = false">{{ $t('cancel') }}</el-button>

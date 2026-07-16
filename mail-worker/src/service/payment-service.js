@@ -18,12 +18,12 @@ const PAYMENT_STATUS = {
 	PAID: 1
 };
 
-const PAYMENT_TYPES = ['alipay', 'wxpay', 'qqpay', 'bank', 'jdpay'];
+const PAYMENT_TYPES = ['alipay', 'wxpay'];
 
 // 套餐价格是累计价格，升级时只收目标套餐与当前套餐的差价。
 const PAYMENT_PLANS = [
-	{ code: 'multi-game', name: '多坑用户', roleId: 2, level: 1, priceCent: 500 },
-	{ code: 'multi-account', name: '多账户人员', roleId: 4, level: 2, priceCent: 1000 },
+	{ code: 'multi-game', name: '多域用户', roleId: 2, level: 1, priceCent: 500 },
+	{ code: 'multi-account', name: '多账户用户', roleId: 4, level: 2, priceCent: 1000 },
 	{ code: 'premium', name: '高级用户', roleId: 5, level: 3, priceCent: 1500 }
 ];
 
