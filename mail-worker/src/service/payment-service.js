@@ -43,7 +43,15 @@ function getEpayConfig(c) {
 	const siteUrl = String(c.env.epay_site_url || requestOrigin).replace(/\/$/, '');
 	const merchantKey = String(c.env.EPAY_KEY || '').trim();
 
-	if (!apiUrl || !pid || !merchantKey) {
+	const missingConfigNames = [
+		!apiUrl && 'epay_api_url',
+		!pid && 'epay_pid',
+		!merchantKey && 'EPAY_KEY'
+	].filter(Boolean);
+
+	if (missingConfigNames.length > 0) {
+		// 仅记录缺失的配置名称，不输出任何密钥内容。
+		console.error(`支付配置缺失: ${missingConfigNames.join(', ')}`);
 		throw new BizError(t('paymentNotConfigured'));
 	}
 
