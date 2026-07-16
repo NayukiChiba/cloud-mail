@@ -152,6 +152,7 @@ import {useUserStore} from "@/store/user.js";
 import {useSettingStore} from "@/store/setting.js";
 import {isEmail, isDomain} from "@/utils/verify-utils.js";
 import {useI18n} from "vue-i18n";
+import {formatDomain} from "@/utils/domainUtils.js";
 
 defineOptions({
   name: 'role'
@@ -204,7 +205,7 @@ rolePermTree().then(tree => {
 
 domainOptions = domainList.map(domain => {
   const cleanDomain = domain.replace(/^@/, '');
-  return {label: cleanDomain, value: cleanDomain};
+  return {label: formatDomain(cleanDomain), value: cleanDomain};
 });
 
 

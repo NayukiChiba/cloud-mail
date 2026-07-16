@@ -9,7 +9,7 @@
         <el-card class="item" :class="itemBg(item.accountId)" v-for="(item, index) in accounts" :key="item.accountId"
                  @click="changeAccount(item)">
           <div class="account">
-            {{ item.email }}
+            {{ formatEmail(item.email) }}
           </div>
           <div class="opt">
             <div class="send-email" @click.stop>
@@ -89,12 +89,12 @@
                 <el-option
                     v-for="item in domainList"
                     :key="item"
-                    :label="item"
+                    :label="formatDomain(item)"
                     :value="item"
                 />
               </el-select>
               <div>
-                <span>{{ addForm.suffix }}</span>
+                <span>{{ formatDomain(addForm.suffix) }}</span>
                 <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
               </div>
             </div>
@@ -145,6 +145,7 @@ import {useUserStore} from "@/store/user.js";
 import {hasPerm} from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
 import {AccountAllReceiveEnum} from "@/enums/account-enum.js";
+import {formatDomain, formatEmail} from "@/utils/domainUtils.js";
 
 const {t} = useI18n();
 const userStore = useUserStore();

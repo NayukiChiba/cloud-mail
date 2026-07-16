@@ -452,7 +452,7 @@
             <el-option
                 v-for="item in settingStore.domainList"
                 :key="item"
-                :label="item"
+                :label="formatDomain(item)"
                 :value="item"
             />
           </el-select>
@@ -818,6 +818,7 @@ import {isDomain, isEmail} from "@/utils/verify-utils.js";
 import loading from "@/components/loading/index.vue";
 import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
+import {formatDomain} from "@/utils/domainUtils.js";
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
 

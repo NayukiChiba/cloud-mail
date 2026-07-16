@@ -22,7 +22,7 @@
               <div class="send"><span class="send-source">{{$t('from')}}</span>
                 <div class="send-name">
                   <span class="send-name-title">{{ email.name }}</span>
-                  <span><{{ email.sendEmail }}></span>
+                  <span><{{ formatEmail(email.sendEmail) }}></span>
                 </div>
               </div>
               <div class="receive"><span class="source">{{$t('recipient')}}</span><span class="receive-email">{{  formateReceive(email.recipient) }}</span></div>
@@ -92,6 +92,7 @@ import {allEmailDelete} from "@/request/all-email.js";
 import {useUiStore} from "@/store/ui.js";
 import {useI18n} from "vue-i18n";
 import {EmailUnreadEnum} from "@/enums/email-enum.js";
+import {formatEmail} from "@/utils/domainUtils.js";
 
 const uiStore = useUiStore();
 const settingStore = useSettingStore();
@@ -150,7 +151,7 @@ function isImage(filename) {
 
 function formateReceive(recipient) {
   recipient = JSON.parse(recipient)
-  return recipient.map(item => item.address).join(', ')
+  return recipient.map(item => formatEmail(item.address)).join(', ')
 }
 
 function changeStar() {

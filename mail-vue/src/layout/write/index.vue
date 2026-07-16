@@ -8,7 +8,7 @@
           </span>
           <span class="sender">{{ $t('sender') }}:</span>
           <span class="sender-name">{{ form.name }}</span>
-          <span class="send-email"><{{ form.sendEmail }}></span>
+          <span class="send-email"><{{ formatEmail(form.sendEmail) }}></span>
         </div>
         <div @click="close" style="cursor: pointer;">
           <Icon icon="material-symbols-light:close-rounded" width="22" height="22"/>
@@ -74,7 +74,7 @@
         <el-table-column type="selection" width="32" />
         <el-table-column property="email" :label="t('emailAccount')" >
           <template #default="props">
-            <div class="email-row">{{ props.row.email }}</div>
+            <div class="email-row">{{ formatEmail(props.row.email) }}</div>
           </template>
         </el-table-column>
         <el-table-column width="55" label="" >
@@ -106,6 +106,7 @@ import {getIconByName} from "@/utils/icon-utils.js";
 import sendPercent from "@/components/send-percent/index.vue"
 import {toOssDomain} from "@/utils/convert.js";
 import {formatDetailDate} from "@/utils/day.js";
+import {formatEmail} from "@/utils/domainUtils.js";
 import {useSettingStore} from "@/store/setting.js";
 import {userDraftStore} from "@/store/draft.js";
 import {useWriterStore} from "@/store/writer.js";

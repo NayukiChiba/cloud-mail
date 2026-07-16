@@ -28,12 +28,12 @@
                   <el-option
                       v-for="item in domainList"
                       :key="item"
-                      :label="item"
+                      :label="formatDomain(item)"
                       :value="item"
                   />
                 </el-select>
                 <div style="color: var(--el-text-color-primary)">
-                  <span>{{ suffix }}</span>
+                  <span>{{ formatDomain(suffix) }}</span>
                   <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
                 </div>
               </div>
@@ -63,12 +63,12 @@
                   <el-option
                       v-for="item in domainList"
                       :key="item"
-                      :label="item"
+                      :label="formatDomain(item)"
                       :value="item"
                   />
                 </el-select>
                 <div>
-                  <span>{{ suffix }}</span>
+                  <span>{{ formatDomain(suffix) }}</span>
                   <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
                 </div>
               </div>
@@ -120,12 +120,12 @@
                 <el-option
                     v-for="item in domainList"
                     :key="item"
-                    :label="item"
+                    :label="formatDomain(item)"
                     :value="item"
                 />
               </el-select>
               <div>
-                <span>{{ suffix }}</span>
+                <span>{{ formatDomain(suffix) }}</span>
                 <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
               </div>
             </div>
@@ -163,6 +163,7 @@ import {loginUserInfo} from "@/request/my.js";
 import {permsToRouter} from "@/perm/perm.js";
 import {useI18n} from "vue-i18n";
 import {oauthBindUser, oauthLinuxDoLogin} from "@/request/ouath.js";
+import {formatDomain} from "@/utils/domainUtils.js";
 
 const {t} = useI18n();
 const accountStore = useAccountStore();

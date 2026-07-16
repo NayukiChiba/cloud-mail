@@ -53,6 +53,9 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^4.2.0
         version: 4.5.0(pinia@3.0.3(vue@3.5.20))
+      punycode:
+        specifier: ^2.3.1
+        version: 2.3.1
       vue:
         specifier: ^3.5.13
         version: 3.5.20

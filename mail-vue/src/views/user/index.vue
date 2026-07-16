@@ -46,7 +46,7 @@
                            :min-width="emailWidth">
             <template #default="props">
               <div style="display: flex;gap: 5px">
-                <div class="email-row">{{ props.row.email }}</div>
+                <div class="email-row">{{ formatEmail(props.row.email) }}</div>
                 <el-tag type="warning" v-if="props.row.username">L</el-tag>
               </div>
             </template>
@@ -167,12 +167,12 @@
                 <el-option
                     v-for="item in domainList"
                     :key="item"
-                    :label="item"
+                    :label="formatDomain(item)"
                     :value="item"
                 />
               </el-select>
               <div>
-                <span>{{ addForm.suffix }}</span>
+                <span>{{ formatDomain(addForm.suffix) }}</span>
                 <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
               </div>
             </div>
@@ -191,7 +191,7 @@
       <el-table :data="accountList" style="height: 480px" v-loading="accountLoading" element-loading-background="transparent" :empty-text="accountLoading ? '' : null">
         <el-table-column property="email" :label="t('emailAccount')" >
           <template #default="props">
-            <div class="email-row">{{ props.row.email }}</div>
+            <div class="email-row">{{ formatEmail(props.row.email) }}</div>
           </template>
         </el-table-column>
         <el-table-column property="address" :label="t('tabStatus')"  :width="locale === 'en' ? 75 : 65" >
@@ -384,6 +384,7 @@ import loading from "@/components/loading/index.vue";
 import {tzDayjs} from "@/utils/day.js";
 import {useSettingStore} from "@/store/setting.js";
 import {isEmail} from "@/utils/verify-utils.js";
+import {formatDomain, formatEmail} from "@/utils/domainUtils.js";
 import {useRoleStore} from "@/store/role.js";
 import {useUserStore} from "@/store/user.js";
 import {useI18n} from 'vue-i18n';
@@ -673,7 +674,7 @@ function setRightStatusName(user) {
 }
 
 const tableRowFormatter = (data) => {
-  return data.row.email
+  return formatEmail(data.row.email)
 }
 
 const openSelect = () => {
@@ -793,7 +794,7 @@ function toRoleName(type) {
 
 function resetSendCount(user) {
 
-  ElMessageBox.confirm(t('reSendConfirm', {msg: user.email}), {
+  ElMessageBox.confirm(t('reSendConfirm', {msg: formatEmail(user.email)}), {
     confirmButtonText: t('confirm'),
     cancelButtonText: t('cancel'),
     type: 'warning'
@@ -832,7 +833,7 @@ function delUser(user) {
 }
 
 function delOneUser(user) {
-  ElMessageBox.confirm(t('delConfirm', {msg: user.email}), {
+  ElMessageBox.confirm(t('delConfirm', {msg: formatEmail(user.email)}), {
     confirmButtonText: t('confirm'),
     cancelButtonText: t('cancel'),
     type: 'warning'
@@ -856,7 +857,7 @@ function restore(user) {
     confirmButtonText: t('confirm'),
     cancelButtonText: t('cancel'),
     message: () => h('div', [
-      h('div', {class: 'mb-2'}, t('restoreConfirm', {msg: user.email}))
+      h('div', {class: 'mb-2'}, t('restoreConfirm', {msg: formatEmail(user.email)}))
       // h(ElRadioGroup, {
       //   modelValue: type.value,
       //   'onUpdate:modelValue': (val) => (type.value = val),

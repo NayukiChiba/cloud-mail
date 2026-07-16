@@ -35,7 +35,7 @@
               {{ userStore.user.name }}
             </div>
             <div class="detail-email" @click="copyEmail(userStore.user.email)">
-              {{ userStore.user.email }}
+              {{ formatEmail(userStore.user.email) }}
             </div>
             <div class="detail-user-type">
               <el-tag>{{ userStore.user.role.name }}</el-tag>
@@ -85,6 +85,7 @@ import {useSettingStore} from "@/store/setting.js";
 import {hasPerm} from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
 import {setExtend} from "@/utils/day.js"
+import {formatEmail} from "@/utils/domainUtils.js";
 
 const {t} = useI18n();
 const route = useRoute();

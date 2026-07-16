@@ -14,7 +14,7 @@
                :type="'draft'"
   >
     <template #name="props">
-      <span class="send-email">{{ props.email.receiveEmail?.join(',') || '(' + $t('noRecipient') + ')' }}</span>
+      <span class="send-email">{{ props.email.receiveEmail?.map(formatEmail).join(',') || '(' + $t('noRecipient') + ')' }}</span>
     </template>
     <template #subject="props">
       {{ props.email.subject || '(' + $t('noSubject') + ')' }}
@@ -30,6 +30,7 @@ import {defineOptions, ref, watch, toRaw} from "vue";
 import {useUiStore} from "@/store/ui.js";
 import {userDraftStore} from "@/store/draft.js";
 import db from "@/db/db.js"
+import {formatEmail} from "@/utils/domainUtils.js";
 
 defineOptions({
   name: 'draft'

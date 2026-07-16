@@ -21,7 +21,7 @@
       </div>
       <div class="item">
         <div>{{$t('emailAccount')}}</div>
-        <div>{{ userStore.user.email }}</div>
+        <div>{{ formatEmail(userStore.user.email) }}</div>
       </div>
       <div class="item">
         <div>{{$t('password')}}</div>
@@ -69,6 +69,7 @@ import {accountSetName} from "@/request/account.js";
 import {useAccountStore} from "@/store/account.js";
 import {useI18n} from "vue-i18n";
 import {useSettingStore} from "@/store/setting.js";
+import {formatEmail} from "@/utils/domainUtils.js";
 
 const { t } = useI18n()
 const accountStore = useAccountStore()

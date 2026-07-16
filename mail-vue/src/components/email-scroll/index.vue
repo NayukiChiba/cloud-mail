@@ -96,13 +96,13 @@
                       <span>
                         <Icon icon="mynaui:user" width="20" height="20"/>
                       </span>
-                      <span>{{ item.userEmail }}</span>
+                      <span>{{ formatEmail(item.userEmail) }}</span>
                     </div>
                     <div class="account">
                       <span>
                         <Icon icon="mdi-light:email" width="20" height="20"/>
                       </span>
-                      <span>{{ item.type === 0 ? item.toEmail : item.sendEmail }}</span>
+                      <span>{{ formatEmail(item.type === 0 ? item.toEmail : item.sendEmail) }}</span>
                     </div>
                   </div>
                 </div>
@@ -246,6 +246,7 @@ import {useI18n} from "vue-i18n";
 import {EmailUnreadEnum} from "@/enums/email-enum.js";
 import { UseVirtualList } from '@vueuse/components'
 import { useScroll } from '@vueuse/core'
+import {formatEmail} from "@/utils/domainUtils.js";
 
 const props = defineProps({
   getEmailList: Function,
