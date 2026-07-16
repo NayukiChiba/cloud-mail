@@ -128,7 +128,7 @@ const en = {
     regBtn: 'Sign up',
     loginTitle: 'Sign in to your account to access email',
     regTitle: 'Sign up for an account to use email',
-    loginEmailUsernameHint: 'Enter your username and select a domain on the right',
+    loginEmailUsernameHint: 'Sign in with your username only, not with domain',
     registerEmailUsernameHint: 'Enter only a username to register {domain} automatically',
     confirmPwd: 'Confirm password',
     regKeyOptional: 'Invite code (Optional)',

@@ -15,31 +15,7 @@
         <span class="form-desc" v-else>{{ $t('regTitle') }}</span>
         <div v-show="show === 'login'">
           <div class="login-email-field">
-            <el-input class="email-input" v-model="form.email"
-                      type="text" :placeholder="$t('username')" autocomplete="off">
-              <template #append>
-                <div @click.stop="openSelect">
-                  <el-select
-                      v-if="show === 'login'"
-                      ref="mySelect"
-                      v-model="suffix"
-                      :placeholder="$t('select')"
-                      class="select"
-                  >
-                    <el-option
-                        v-for="item in domainList"
-                        :key="item"
-                        :label="formatDomain(item)"
-                        :value="item"
-                    />
-                  </el-select>
-                  <div style="color: var(--el-text-color-primary)">
-                    <span>{{ formatDomain(suffix) }}</span>
-                    <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
-                  </div>
-                </div>
-              </template>
-            </el-input>
+            <el-input v-model="form.email" type="text" :placeholder="$t('username')" autocomplete="off"/>
             <span class="login-email-hint">
               {{ $t('loginEmailUsernameHint') }}
             </span>
@@ -243,7 +219,7 @@ const getFullEmail = (email) => {
   return email + suffix.value
 }
 
-const getRegisterEmail = (username) => {
+const getDefaultEmail = (username) => {
   return username + defaultSuffix.value
 }
 
@@ -362,7 +338,7 @@ const submit = () => {
     return
   }
 
-  let email = getFullEmail(form.email);
+  let email = getDefaultEmail(form.email);
 
   if (!isEmail(email)) {
     ElMessage({
@@ -443,7 +419,7 @@ function submitRegister() {
     return
   }
 
-  const email = getRegisterEmail(registerForm.email);
+  const email = getDefaultEmail(registerForm.email);
 
   if (!isEmail(email)) {
     ElMessage({
