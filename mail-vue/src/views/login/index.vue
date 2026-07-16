@@ -14,31 +14,36 @@
         <span class="form-desc" v-if="show === 'login'">{{ $t('loginTitle') }}</span>
         <span class="form-desc" v-else>{{ $t('regTitle') }}</span>
         <div v-show="show === 'login'">
-          <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="form.email"
-                    type="text" :placeholder="$t('emailAccount')" autocomplete="off">
-            <template #append v-if="!hideLoginDomain">
-              <div @click.stop="openSelect">
-                <el-select
-                    v-if="show === 'login'"
-                    ref="mySelect"
-                    v-model="suffix"
-                    :placeholder="$t('select')"
-                    class="select"
-                >
-                  <el-option
-                      v-for="item in domainList"
-                      :key="item"
-                      :label="formatDomain(item)"
-                      :value="item"
-                  />
-                </el-select>
-                <div style="color: var(--el-text-color-primary)">
-                  <span>{{ formatDomain(suffix) }}</span>
-                  <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
+          <div class="login-email-field">
+            <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="form.email"
+                      type="text" :placeholder="$t('emailAccount')" autocomplete="off">
+              <template #append v-if="!hideLoginDomain">
+                <div @click.stop="openSelect">
+                  <el-select
+                      v-if="show === 'login'"
+                      ref="mySelect"
+                      v-model="suffix"
+                      :placeholder="$t('select')"
+                      class="select"
+                  >
+                    <el-option
+                        v-for="item in domainList"
+                        :key="item"
+                        :label="formatDomain(item)"
+                        :value="item"
+                    />
+                  </el-select>
+                  <div style="color: var(--el-text-color-primary)">
+                    <span>{{ formatDomain(suffix) }}</span>
+                    <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </el-input>
+              </template>
+            </el-input>
+            <span class="login-email-hint">
+              {{ $t(hideLoginDomain ? 'loginEmailFullHint' : 'loginEmailUsernameHint') }}
+            </span>
+          </div>
           <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off">
           </el-input>
           <el-button class="btn" type="primary" @click="submit" :loading="loginLoading"
@@ -49,7 +54,7 @@
           </el-button>
         </div>
         <div v-show="show !== 'login'">
-          <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')"
+          <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="registerForm.email" type="text" :placeholder="$t('username')"
                     autocomplete="off">
             <template #append v-if="!hideLoginDomain">
               <div @click.stop="openSelect">
@@ -74,6 +79,7 @@
               </div>
             </template>
           </el-input>
+          <span class="register-email-hint">{{ $t('registerEmailUsernameHint') }}</span>
           <el-input v-model="registerForm.password" :placeholder="$t('password')" type="password" autocomplete="off"/>
           <el-input v-model="registerForm.confirmPassword" :placeholder="$t('confirmPwd')" type="password"
                     autocomplete="off"/>
@@ -667,6 +673,27 @@ function submitRegister() {
   .email-input :deep(.el-input__wrapper) {
     border-radius: 6px 0 0 6px;
     background: var(--el-bg-color);
+  }
+
+  .login-email-field {
+    margin-bottom: 18px;
+
+    .el-input {
+      margin-bottom: 4px;
+    }
+  }
+
+  .login-email-hint,
+  .register-email-hint {
+    display: block;
+    color: var(--form-desc-color);
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .register-email-hint {
+    margin-top: -14px;
+    margin-bottom: 18px;
   }
 
   .el-input {
