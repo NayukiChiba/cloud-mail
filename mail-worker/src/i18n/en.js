@@ -32,6 +32,8 @@ const en = {
 	banEmailPrefix: 'Invalid characters in email address',
 	pwdMinLength: 'Password must be at least 6 characters',
 	notEmailDomain: 'Invalid email domain',
+	loginDomainNotAllowed: 'This email domain is not allowed to sign in',
+	registerDomainNotAllowed: 'This email domain is not allowed for registration',
 	emptyRegKey: 'Invite code cannot be empty',
 	notExistRegKey: 'Invite code does not exist',
 	noRegKeyTotal: 'Invite code usage limit reached',

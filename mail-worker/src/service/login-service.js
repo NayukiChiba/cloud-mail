@@ -20,13 +20,26 @@ import { toUtc } from '../utils/date-uitil';
 import { t } from '../i18n/i18n.js';
 import verifyRecordService from './verify-record-service';
 
+function hasAllowedDomain(domainList, email) {
+	const emailDomain = emailUtils.getDomain(email).toLowerCase();
+	return domainList.some(domain => String(domain).replace(/^@/, '').toLowerCase() === emailDomain);
+}
+
 const loginService = {
 
 	async register(c, params, oauth = false) {
 
 		const { email, password, token, code } = params;
 
-		let { regKey, register, registerVerify, regVerifyCount, minEmailPrefix, emailPrefixFilter } = await settingService.query(c)
+		let {
+			regKey,
+			register,
+			registerVerify,
+			regVerifyCount,
+			minEmailPrefix,
+			emailPrefixFilter,
+			registerDomains
+		} = await settingService.query(c)
 
 		if (oauth) {
 			registerVerify = settingConst.registerVerify.CLOSE;
@@ -61,8 +74,8 @@ const loginService = {
 			throw new BizError(t('pwdMinLength'));
 		}
 
-		if (!c.env.domain.includes(emailUtils.getDomain(email))) {
-			throw new BizError(t('notEmailDomain'));
+		if (!hasAllowedDomain(registerDomains, email)) {
+			throw new BizError(t('registerDomainNotAllowed'));
 		}
 
 		let type = null;
@@ -205,6 +218,12 @@ const loginService = {
 
 		if ((!email || !password) && !noVerifyPwd) {
 			throw new BizError(t('emailAndPwdEmpty'));
+		}
+
+		const { loginDomains } = await settingService.query(c);
+		const isAdmin = String(email).toLowerCase() === String(c.env.admin || '').toLowerCase();
+		if (!isAdmin && !hasAllowedDomain(loginDomains, email)) {
+			throw new BizError(t('loginDomainNotAllowed'));
 		}
 
 		const userRow = await userService.selectByEmailIncludeDel(c, email);

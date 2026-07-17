@@ -8,6 +8,40 @@ import constant from '../const/constant';
 import BizError from '../error/biz-error';
 import {t} from '../i18n/i18n'
 import verifyRecordService from './verify-record-service';
+import userContext from '../security/user-context';
+
+function normalizeDomain(domain) {
+	return String(domain || '').trim().replace(/^@/, '').toLowerCase();
+}
+
+function parseConfiguredDomains(value, fallbackDomains) {
+	const hasStoredValue = value !== undefined && value !== null;
+	let domains = value;
+	if (typeof domains === 'string') {
+		domains = domains.split(',');
+	}
+	if (!Array.isArray(domains)) {
+		domains = [];
+	}
+
+	const availableDomains = new Set(fallbackDomains.map(normalizeDomain));
+	const configuredDomains = [...new Set(domains
+		.map(normalizeDomain)
+		.filter(domain => availableDomains.has(domain)))];
+
+	return (hasStoredValue ? configuredDomains : [...availableDomains])
+		.map(domain => `@${domain}`);
+}
+
+function serializeConfiguredDomains(value, requiredDomain = '') {
+	if (!Array.isArray(value)) {
+		return value;
+	}
+	return [...new Set([
+		...value.map(normalizeDomain).filter(Boolean),
+		normalizeDomain(requiredDomain)
+	].filter(Boolean))].join(',');
+}
 
 const settingService = {
 
@@ -44,8 +78,14 @@ const settingService = {
 			throw new BizError(t('noDomainVariable'));
 		}
 
-		domainList = domainList.map(item => '@' + item);
-		setting.domainList = domainList;
+		const environmentDomains = domainList.map(normalizeDomain).filter(Boolean);
+		setting.domainList = environmentDomains.map(domain => `@${domain}`);
+		setting.loginDomains = parseConfiguredDomains(setting.loginDomains, environmentDomains);
+		setting.registerDomains = parseConfiguredDomains(setting.registerDomains, environmentDomains);
+		const adminDomain = normalizeDomain(String(c.env.admin || '').split('@')[1]);
+		if (environmentDomains.includes(adminDomain) && !setting.loginDomains.includes(`@${adminDomain}`)) {
+			setting.loginDomains.push(`@${adminDomain}`);
+		}
 
 
 		let linuxdoSwitch = c.env.linuxdo_switch;
@@ -125,6 +165,7 @@ const settingService = {
 
 	async set(c, params) {
 		const settingData = await this.query(c);
+		params = {...params};
 		let resendTokens = { ...settingData.resendTokens, ...params.resendTokens };
 		Object.keys(resendTokens).forEach(domain => {
 			if (!resendTokens[domain]) delete resendTokens[domain];
@@ -137,6 +178,10 @@ const settingService = {
 		if (Array.isArray(params.aiCodeFilter)) {
 			params.aiCodeFilter = params.aiCodeFilter + '';
 		}
+
+		const adminDomain = String(c.env.admin || '').split('@')[1] || '';
+		params.loginDomains = serializeConfiguredDomains(params.loginDomains, adminDomain);
+		params.registerDomains = serializeConfiguredDomains(params.registerDomains);
 
 		params.resendTokens = JSON.stringify(resendTokens);
 		await orm(c).update(setting).set({ ...params }).returning().get();
@@ -199,6 +244,8 @@ const settingService = {
 	async websiteConfig(c) {
 
 		const settingRow = await this.get(c, true);
+		const token = await userContext.getToken(c);
+		const hidePublicDomains = settingRow.loginDomain === 1 && !token;
 
 		return {
 			register: settingRow.register,
@@ -213,7 +260,9 @@ const settingService = {
 			siteKey: settingRow.siteKey,
 			background: settingRow.background,
 			loginOpacity: settingRow.loginOpacity,
-			domainList: settingRow.domainList,
+			domainList: hidePublicDomains ? [] : settingRow.domainList,
+			loginDomains: hidePublicDomains ? [] : settingRow.loginDomains,
+			registerDomains: hidePublicDomains ? [] : settingRow.registerDomains,
 			regKey: settingRow.regKey,
 			regVerifyOpen: settingRow.regVerifyOpen,
 			addVerifyOpen: settingRow.addVerifyOpen,

@@ -25,6 +25,52 @@
                 </div>
               </div>
               <div class="setting-item">
+                <div>
+                  <span>{{ $t('allowedLoginDomains') }}</span>
+                  <el-tooltip effect="dark" :content="$t('allowedLoginDomainsDesc')">
+                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                  </el-tooltip>
+                </div>
+                <el-select
+                    v-model="setting.loginDomains"
+                    multiple
+                    collapse-tags
+                    collapse-tags-tooltip
+                    style="width: 230px"
+                    @change="change"
+                >
+                  <el-option
+                      v-for="domain in settingStore.domainList"
+                      :key="domain"
+                      :label="formatDomain(domain)"
+                      :value="domain"
+                  />
+                </el-select>
+              </div>
+              <div class="setting-item">
+                <div>
+                  <span>{{ $t('allowedRegisterDomains') }}</span>
+                  <el-tooltip effect="dark" :content="$t('allowedRegisterDomainsDesc')">
+                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                  </el-tooltip>
+                </div>
+                <el-select
+                    v-model="setting.registerDomains"
+                    multiple
+                    collapse-tags
+                    collapse-tags-tooltip
+                    style="width: 230px"
+                    @change="change"
+                >
+                  <el-option
+                      v-for="domain in settingStore.domainList"
+                      :key="domain"
+                      :label="formatDomain(domain)"
+                      :value="domain"
+                  />
+                </el-select>
+              </div>
+              <div class="setting-item">
                 <div><span>{{ $t('regKey') }}</span></div>
                 <div>
                   <el-select

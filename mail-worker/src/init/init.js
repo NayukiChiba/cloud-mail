@@ -30,8 +30,44 @@ const dbInit = {
 		await this.v2_9DB(c);
 		await this.v3_0DB(c);
 		await this.v3_1DB(c);
+		await this.v3_2DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
+	},
+
+	async v3_2DB(c) {
+		const sqlList = [
+			`ALTER TABLE setting ADD COLUMN login_domains TEXT NOT NULL DEFAULT '';`,
+			`ALTER TABLE setting ADD COLUMN register_domains TEXT NOT NULL DEFAULT '';`
+		];
+		let columnAdded = false;
+
+		for (const sql of sqlList) {
+			try {
+				await c.env.db.prepare(sql).run();
+				columnAdded = true;
+			} catch (error) {
+				console.warn(`跳过字段：${error.message}`);
+			}
+		}
+
+		if (columnAdded) {
+			let domains = c.env.domain;
+			if (typeof domains === 'string') {
+				try {
+					domains = JSON.parse(domains);
+				} catch (error) {
+					domains = [];
+				}
+			}
+			const domainText = Array.isArray(domains)
+				? domains.map(domain => String(domain).trim().replace(/^@/, '').toLowerCase()).filter(Boolean).join(',')
+				: '';
+			await c.env.db.prepare(`
+				UPDATE setting
+				SET login_domains = ?, register_domains = ?
+			`).bind(domainText, domainText).run();
+		}
 	},
 
 	async v3_1DB(c) {

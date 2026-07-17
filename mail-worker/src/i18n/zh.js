@@ -32,6 +32,8 @@ const zh = {
 	banEmailPrefix: '邮箱名包含非法字符',
 	pwdMinLength: '密码至少六位',
 	notEmailDomain: '非法邮箱域名',
+	loginDomainNotAllowed: '该邮箱域名不允许登录',
+	registerDomainNotAllowed: '该邮箱域名不允许注册',
 	emptyRegKey: '注册码不能为空',
 	notExistRegKey: '注册码不存在',
 	noRegKeyTotal: '注册码使用次数已耗尽',
