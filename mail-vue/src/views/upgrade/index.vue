@@ -10,15 +10,6 @@
       </el-tag>
     </div>
 
-    <el-alert
-        v-if="returnMessage"
-        :title="returnMessage"
-        :type="returnType"
-        show-icon
-        :closable="false"
-        class="return-alert"
-    />
-
     <el-skeleton :loading="loading" animated :rows="6">
       <div class="plan-list">
         <el-card
@@ -56,52 +47,22 @@
               type="primary"
               class="buy-button"
               :disabled="!plan.canUpgrade"
-              @click="openPayment(plan)"
+              @click="goToAfdian"
           >
-            {{ $t('upgradeNow') }}
+            {{ $t('goToAfdian') }}
           </el-button>
         </el-card>
       </div>
     </el-skeleton>
-
-    <el-dialog v-model="paymentVisible" :title="$t('selectPaymentMethod')" width="420px">
-      <div v-if="selectedPlan" class="order-summary">
-        <div><span>{{ $t('targetRole') }}</span><strong>{{ selectedPlan.name }}</strong></div>
-        <div><span>{{ $t('paymentAmount') }}</span><strong>¥{{ selectedPlan.payAmount }}</strong></div>
-      </div>
-      <el-radio-group v-model="paymentType" class="payment-types">
-        <el-radio-button value="alipay">{{ $t('alipay') }}</el-radio-button>
-        <el-radio-button value="wxpay">{{ $t('wechatPay') }}</el-radio-button>
-      </el-radio-group>
-      <template #footer>
-        <el-button @click="paymentVisible = false">{{ $t('cancel') }}</el-button>
-        <el-button type="primary" :loading="creating" @click="createOrder">
-          {{ $t('confirmPayment') }}
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { paymentCreateOrder, paymentOrder, paymentPlans } from '@/request/payment.js';
-import { useUserStore } from '@/store/user.js';
-
-const route = useRoute();
-const router = useRouter();
-const { t } = useI18n();
-const userStore = useUserStore();
+import { onMounted, reactive, ref } from 'vue';
+import { paymentPlans } from '@/request/payment.js';
 
 const loading = ref(true);
-const creating = ref(false);
-const paymentVisible = ref(false);
-const paymentType = ref('alipay');
-const selectedPlan = ref(null);
-const returnMessage = ref('');
-const returnType = ref('info');
+const AFDIAN_URL = 'https://ifdian.net/a/NayukiChiba';
 const PLAN_FEATURE_KEYS = Object.freeze({
   'multi-domain': [
     'multiDomainFeatureDomains',
@@ -126,9 +87,6 @@ const planData = reactive({
   plans: []
 });
 
-let pollTimer = null;
-let pollCount = 0;
-
 function getPlanFeatureKeys(planCode) {
   return PLAN_FEATURE_KEYS[planCode] || [];
 }
@@ -143,93 +101,11 @@ async function loadPlans() {
   }
 }
 
-function openPayment(plan) {
-  selectedPlan.value = plan;
-  paymentVisible.value = true;
+function goToAfdian() {
+  window.location.href = AFDIAN_URL;
 }
 
-function submitPaymentForm(submitUrl, fields) {
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = submitUrl;
-  form.style.display = 'none';
-
-  Object.entries(fields).forEach(([name, value]) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = name;
-    input.value = value;
-    form.appendChild(input);
-  });
-
-  document.body.appendChild(form);
-  form.submit();
-}
-
-async function createOrder() {
-  if (!selectedPlan.value) return;
-
-  creating.value = true;
-  try {
-    const data = await paymentCreateOrder({
-      planCode: selectedPlan.value.code,
-      paymentType: paymentType.value
-    });
-    submitPaymentForm(data.submitUrl, data.fields);
-  } finally {
-    creating.value = false;
-  }
-}
-
-async function checkOrder(orderId) {
-  try {
-    const order = await paymentOrder(orderId);
-    if (order.status === 1) {
-      clearInterval(pollTimer);
-      returnMessage.value = t('paymentSuccess');
-      returnType.value = 'success';
-      userStore.refreshUserInfo();
-      await loadPlans();
-      return true;
-    }
-
-    pollCount += 1;
-    if (pollCount >= 15) {
-      clearInterval(pollTimer);
-      returnMessage.value = t('paymentPending');
-      returnType.value = 'warning';
-      return true;
-    }
-  } catch (error) {
-    clearInterval(pollTimer);
-    return true;
-  }
-
-  return false;
-}
-
-onMounted(async () => {
-  await loadPlans();
-
-  const orderId = String(route.query.order || '');
-  if (!orderId) return;
-
-  if (route.query.verified === '0') {
-    returnMessage.value = t('paymentReturnInvalid');
-    returnType.value = 'warning';
-  } else {
-    returnMessage.value = t('paymentConfirming');
-    returnType.value = 'info';
-  }
-
-  await router.replace({ name: 'upgrade' });
-  const completed = await checkOrder(orderId);
-  if (!completed) {
-    pollTimer = setInterval(() => checkOrder(orderId), 2000);
-  }
-});
-
-onBeforeUnmount(() => clearInterval(pollTimer));
+onMounted(loadPlans);
 </script>
 
 <style lang="scss" scoped>
@@ -254,10 +130,6 @@ onBeforeUnmount(() => clearInterval(pollTimer));
     margin: 0;
     color: var(--el-text-color-secondary);
   }
-}
-
-.return-alert {
-  margin-bottom: 20px;
 }
 
 .plan-list {
@@ -346,32 +218,6 @@ onBeforeUnmount(() => clearInterval(pollTimer));
 
 .buy-button {
   width: 100%;
-}
-
-.order-summary {
-  margin-bottom: 18px;
-  padding: 14px;
-  border-radius: 8px;
-  background: var(--el-fill-color-light);
-
-  div {
-    display: flex;
-    justify-content: space-between;
-    line-height: 28px;
-  }
-}
-
-.payment-types {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-
-  :deep(.el-radio-button__inner) {
-    width: 100%;
-    border: 1px solid var(--el-border-color) !important;
-    border-radius: 6px !important;
-    box-shadow: none !important;
-  }
 }
 
 @media (max-width: 767px) {
