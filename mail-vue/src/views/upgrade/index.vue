@@ -62,7 +62,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { paymentPlans } from '@/request/payment.js';
 
 const loading = ref(true);
-const AFDIAN_URL = 'https://ifdian.net/a/NayukiChiba';
+const AFDIAN_URL = 'https://ifdian.net/item/02d026cc819811f196d552540025c377';
 const PLAN_FEATURE_KEYS = Object.freeze({
   'multi-domain': [
     'multiDomainFeatureDomains',
