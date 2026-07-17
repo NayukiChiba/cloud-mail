@@ -226,7 +226,7 @@ const loginService = {
 			throw new BizError(t('loginDomainNotAllowed'));
 		}
 
-		const userRow = await userService.selectByEmailIncludeDel(c, email);
+		const userRow = await this.selectLoginUser(c, email);
 
 		if (!userRow) {
 			throw new BizError(t('notExistUser'));
@@ -273,6 +273,21 @@ const loginService = {
 
 		await c.env.kv.put(KvConst.AUTH_INFO + userRow.userId, JSON.stringify(authInfo), { expirationTtl: constant.TOKEN_EXPIRE });
 		return jwt;
+	},
+
+	async selectLoginUser(c, email) {
+		const userRow = await userService.selectByEmailIncludeDel(c, email);
+		if (userRow) {
+			return userRow;
+		}
+
+		// 附属邮箱统一使用所属用户的密码和权限登录。
+		const accountRow = await accountService.selectByEmailIncludeDel(c, email);
+		if (!accountRow || accountRow.isDel === isDel.DELETE) {
+			return null;
+		}
+
+		return userService.selectByIdIncludeDel(c, accountRow.userId);
 	},
 
 	async logout(c, userId) {
